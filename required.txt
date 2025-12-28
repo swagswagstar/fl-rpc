@@ -1,0 +1,8 @@
+REQUIRED PYTHON DEPENDENCIES
+
+psutil
+pywin32
+pypresence
+pystray
+Pillow
+win10toast
