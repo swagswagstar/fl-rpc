@@ -6,9 +6,18 @@ import os
 import webbrowser
 import pystray
 from PIL import Image
+import sys
 
 CONFIG_FILE = "config.json"
 ICON_FILE = "icon.ico"
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and PyInstaller """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class AppGUI:
     def __init__(self):
@@ -16,7 +25,7 @@ class AppGUI:
         self.root.title("zekkie's fun fl studio rpc tool for discord")
         self.root.geometry("520x520")
         self.root.resizable(False, False)
-        self.root.iconbitmap(ICON_FILE)
+        self.root.iconbitmap(resource_path(ICON_FILE))
 
         self.running = True
         self.tray = None
@@ -63,9 +72,12 @@ class AppGUI:
         menubar.add_cascade(label="File", menu=file_menu)
 
         help_menu = tk.Menu(menubar, tearoff=0)
-        help_menu.add_command(label="Credits", command=lambda: messagebox.showinfo("Credits", "zekkie's fun fl studio rich presence tool for discord\nby zekkie\nbecause fl doesn't have native discord rpc support\nversion 1.0.0\nbuilt for FL Studio 2025"))
-        help_menu.add_command(label="GitHub Repo", command=lambda: webbrowser.open("https://github.com/yourusername/fl-rpc"))
-        help_menu.add_command(label="Documentation", command=lambda: webbrowser.open("https://github.com/yourusername/fl-rpc/wiki"))
+        help_menu.add_command(label="Credits", command=lambda: messagebox.showinfo(
+            "Credits",
+            "zekkie's fun fl studio rich presence tool for discord\nby zekkie\nbecause fl doesn't have native discord rpc support\nversion 1.0.0\nbuilt for FL Studio 2025"
+        ))
+        help_menu.add_command(label="GitHub Repo", command=lambda: webbrowser.open("https://github.com/swagswagstar/fl-rpc"))
+        help_menu.add_command(label="Documentation", command=lambda: webbrowser.open("https://github.com/swagswagstar/fl-rpc/wiki"))
         menubar.add_cascade(label="Help", menu=help_menu)
 
         self.root.config(menu=menubar)
@@ -171,8 +183,8 @@ class AppGUI:
         try:
             self.notifier.show_toast(
                 "zekkie's fun fl rpc tool",
-                "The app has been minimized to the tray.",
-                icon_path=ICON_FILE,
+                "hey lol i'm still running in your system tray",
+                icon_path=resource_path(ICON_FILE),
                 duration=5,
                 threaded=True
             )
@@ -180,7 +192,7 @@ class AppGUI:
             pass
 
         if not self.tray:
-            image = Image.open(ICON_FILE)
+            image = Image.open(resource_path(ICON_FILE))
             self.tray = pystray.Icon(
                 "fl-rpc",
                 image,
@@ -205,7 +217,6 @@ class AppGUI:
             tray_ref = self.tray
             self.tray = None
             tray_ref.stop()
-
         self.root.after(0, self.root.destroy)
 
     def loop(self):
